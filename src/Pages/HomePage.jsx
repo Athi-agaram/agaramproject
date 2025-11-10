@@ -1,8 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../components/DashboardPage/Dashboard";
 import Sidebar from "../components/sidebar";
-import MasterPage from "../components/MasterPage";
+import MasterPage from "../components/MasterPage/MasterPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 export default function HomePage() {
