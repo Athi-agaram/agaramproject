@@ -72,7 +72,7 @@ const handleLogin = async (e) => {
       <Paper sx={{ width: 420, p: 4, borderRadius: 3, textAlign: "center" }} elevation={6}>
         {!registerOpen ? (
           <>
-            <Typography variant="h5" gutterBottom>Welcome Back</Typography>
+            <Typography variant="h5" gutterBottom>Login </Typography>
             <Box component="form" onSubmit={handleLogin}>
               <TextField fullWidth label="Username" margin="normal" value={username} onChange={e=>setUsername(e.target.value)}  />
               <TextField fullWidth label="Password" type="password" margin="normal" value={password} onChange={e=>setPassword(e.target.value)} />

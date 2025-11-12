@@ -128,13 +128,13 @@ export default function EmployeeTab({ user }) {
   const columns = [
     { field: "sno", headerName: "S.No", width: 100 },
     { field: "id", headerName: "ID", width: 100 },
-    { field: "username", headerName: "Username", width: 230 },
+    { field: "username", headerName: "Username", width: 240 },
     { field: "role", headerName: "Role", width: 210 },
     { field: "team_name", headerName: "Team Name", width: 200 },
     {
       field: "authorized",
       headerName: "Authorized",
-      width: 200,
+      width: 190,
       renderCell: (params) => (params.value ? "Yes" : "No"),
     },
     {
@@ -168,7 +168,7 @@ export default function EmployeeTab({ user }) {
 
   // ---------------- UI ----------------
   return (
-    <Box sx={{ height: 421, width: "100%" }}>
+    <Box sx={{ height: "100%", width: "100%" }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -176,7 +176,20 @@ export default function EmployeeTab({ user }) {
         initialState={{ pagination: { paginationModel: { page: 0, pageSize: 6 } } }}
         pagination
         disableRowSelectionOnClick
-        sx={{ border: 0, "& .MuiDataGrid-cell": { outline: "none" } }}
+          sx={{
+    border: 0,
+    "& .MuiDataGrid-cell": { outline: "none" },
+    "& .MuiDataGrid-columnHeaders": {
+      backgroundColor: "#f5f5f5", // light grey
+    },
+    "& .MuiDataGrid-columnHeader": {
+      backgroundColor: "#f5f5f5", // ensure each header cell also gets it
+    },
+    "& .MuiDataGrid-columnHeaderTitle": {
+      fontWeight: 600, // ✅ ensure header text itself is bold
+
+    },
+  }}
         componentsProps={{ pagination: { sx: { justifyContent: "flex-start", paddingLeft: 20 } } }}
       />
 

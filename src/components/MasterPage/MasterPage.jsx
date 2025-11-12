@@ -84,8 +84,8 @@ export default function MasterPage({ selectedTab }) {
   }
 
   return (
-    <Box sx={{ p: 1 }}>
-      <Paper sx={{ mt: 1, p: 2 }}>
+    <Box sx={{ p: 3 }}>
+      <Paper sx={{ mt: 0.5, p: 0,ml:0 }}>
         <Tabs
           value={tab}
           onChange={(e, v) => setTab(v)}
