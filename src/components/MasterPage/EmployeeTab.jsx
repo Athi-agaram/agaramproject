@@ -168,22 +168,22 @@ export default function EmployeeTab({ user }) {
 
   // ---------------- UI ----------------
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
+    <Box sx={{ height: "474px", width: "1160px" }}>
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSizeOptions={[6, 14]}
-        initialState={{ pagination: { paginationModel: { page: 0, pageSize: 6 } } }}
+        pageSizeOptions={[7, 14]}
+        initialState={{ pagination: { paginationModel: { page: 0, pageSize: 7 } } }}
         pagination
         disableRowSelectionOnClick
           sx={{
     border: 0,
     "& .MuiDataGrid-cell": { outline: "none" },
     "& .MuiDataGrid-columnHeaders": {
-      backgroundColor: "#f5f5f5", // light grey
+      backgroundColor: "#e4e4e4ff", // light grey
     },
     "& .MuiDataGrid-columnHeader": {
-      backgroundColor: "#f5f5f5", // ensure each header cell also gets it
+      backgroundColor: "#e4e4e4ff", // ensure each header cell also gets it
     },
     "& .MuiDataGrid-columnHeaderTitle": {
       fontWeight: 600, // ✅ ensure header text itself is bold

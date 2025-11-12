@@ -606,7 +606,7 @@ export default function RevenueDashboard({ user }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("month");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
 
   const loadRevenue = useCallback(() => {
     const teamName = user?.role === "ADMIN" ? "" : user.team_name;
@@ -712,13 +712,13 @@ export default function RevenueDashboard({ user }) {
   };
 
   return (
-    <Box sx={{ width:"1205px", height: "390px", overflow: "hidden" }}>
+    <Box sx={{ width:"1205px", height: "600px", overflow: "hidden" }}>
       <TableContainer
         component={Paper}
         sx={{
           borderRadius: 1,
           boxShadow: 0,
-          maxHeight: 460,
+          maxHeight: 500,
           overflowX: "auto",
           overflowY: "auto",
           whiteSpace: "nowrap",
@@ -731,17 +731,17 @@ export default function RevenueDashboard({ user }) {
                 { id: "id", label: "ID", width: 70 },
                 { id: "team", label: "Team Name", width: 100 },
                 { id: "month", label: "Month", width: 60 },
-                { id: "totalRevenue", label: "Total Revenue", width: 120 },
-                { id: "numSales", label: "Number of Sales", width: 150 },
-                { id: "avgRevenue", label: "Avg Revenue", width: 200 },
-                { id: "growth", label: "Growth (%)", width: 130 },
-                { id: "ytd", label: "YTD Revenue", width: 180 },
+                { id: "totalRevenue", label: "Total Revenue", width: 90 },
+                { id: "numSales", label: "Number of Sales", width: 90 },
+                { id: "avgRevenue", label: "Avg Revenue", width: 100 },
+                { id: "growth", label: "Growth (%)", width: 90 },
+                { id: "ytd", label: "YTD Revenue", width: 90 },
               ].map((headCell) => (
                 <TableCell
                   key={headCell.id}
                   sx={{
                     width: headCell.width,
-                    maxWidth: headCell.width,
+                    maxWidth: 1000,
                     fontWeight: "600",
                     bgcolor:"#e4e4e4ff"
                   }}
@@ -783,19 +783,19 @@ export default function RevenueDashboard({ user }) {
                     <TableCell sx={{ width: 70 }}>{page * rowsPerPage +i + 1}</TableCell>
                     <TableCell sx={{ width: 100 }}>{r.team}</TableCell>
                     <TableCell sx={{ width: 60 }}>{r.month}</TableCell>
-                    <TableCell align="right" sx={{ width: 120 }}>
+                    <TableCell align="right" sx={{ width: 90 }}>
                       ₹{r.totalRevenue.toLocaleString()}
                     </TableCell>
-                    <TableCell align="right" sx={{ width: 150 }}>
+                    <TableCell align="right" sx={{ width: 90 }}>
                       {r.numSales}
                     </TableCell>
-                    <TableCell align="right" sx={{ width: 200 }}>
+                    <TableCell align="right" sx={{ width: 100 }}>
                       ₹{r.avgRevenue.toFixed(2)}
                     </TableCell>
                     <TableCell
                       align="right"
                       sx={{
-                        width: 130,
+                        width: 90,
                         color:
                           r.growth > 0
                             ? "green"
@@ -806,7 +806,7 @@ export default function RevenueDashboard({ user }) {
                     >
                       {r.growth.toFixed(2)}%
                     </TableCell>
-                    <TableCell align="right" sx={{ width: 180 }}>
+                    <TableCell align="right" sx={{ width: 90 }}>
                       ₹{getYTDRevenue(r.team, r.month).toLocaleString()}
                     </TableCell>
                   </TableRow>

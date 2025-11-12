@@ -75,13 +75,12 @@ export default function HomePage() {
           flex: 1,
           ml: `${drawerWidthCollapsed}px`,
           mt: `${topBarHeight}px`,
-          bgcolor: "#f6f8fb",
+          bgcolor: "#f9fafc",
           p: 2,
         }}
       >
         <TopBar user={user} />
 
-        {/* ✅ Show Dashboard by default */}
         {masterTab ? <MasterPage selectedTab={masterTab} /> : <Dashboard />}
       </Box>
     </Box>

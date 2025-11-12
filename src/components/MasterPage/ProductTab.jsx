@@ -876,32 +876,24 @@ export default function ProductTab({ user }) {
   ];
 
   return (
-    <Box sx={{ height:390, width: "100%" }}>
-      {(user.role === "ADMIN" || user.role === "MANAGER") && (
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpen()}
-          sx={{ mb: 1, mt: -6.5,ml:125 }}
-        >
-          Add Product
-        </Button>
-      )}
+    <Box sx={{ height:390, width: "1190px" }}>
+
 
 <DataGrid
   rows={rows}
   columns={columns}
   getRowId={(row) => row.id} // ✅ stable key for DataGrid
   pagination
-  pageSizeOptions={[5, 10, 20]}
+  pageSizeOptions={[6, 10, 20]}
   initialState={{
-    pagination: { paginationModel: { page: 0, pageSize: 5 } },
+    pagination: { paginationModel: { page: 0, pageSize: 6 } },
   }}
   disableRowSelectionOnClick
   autoHeight
   loading={loading}
   sx={{
     border: 0,
+    ml:0,
     "& .MuiDataGrid-cell": { outline: "none" },
     "& .MuiDataGrid-columnHeaders": {
       backgroundColor: "#e4e4e4ff", // light grey
@@ -915,6 +907,16 @@ export default function ProductTab({ user }) {
     },
   }}
 />
+      {(user.role === "ADMIN" || user.role === "MANAGER") && (
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpen()}
+          sx={{ mb: 1, mt: 0,ml:0 }}
+        >
+          Add Product
+        </Button>
+      )}
 
 
       {/* ---------------- DIALOG ---------------- */}
