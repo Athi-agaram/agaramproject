@@ -1,158 +1,264 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   IconButton,
-  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
   Select,
   MenuItem,
+  Checkbox,
   Typography,
 } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getAllUsers, getTeamUsers, deleteUser, updateEmployee } from "../../api/api";
+import {
+  getAllUsers,
+  getTeamUsers,
+  deleteUser,
+  updateEmployee,
+} from "../../api/api";
+import { FormControl, InputLabel } from "@mui/material"; // make sure to import
+
 
 export default function EmployeeTab({ user }) {
-  const [users, setUsers] = useState([]);
-  
-  // Hardcoded team names
+  const [rows, setRows] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const teamOptions = ["SDMS", "LIMS", "DMS", "ELN"];
   const roleOptions = ["ADMIN", "MANAGER", "EMPLOYEE"];
 
-  // Load users based on role
-  const loadUsers = useCallback(() => {
+  // ---------------- LOAD DATA ----------------
+  const loadData = useCallback(() => {
     if (!user) return;
+    const fetch =
+      user.role === "ADMIN" ? getAllUsers : () => getTeamUsers(user.team_name);
 
-    if (user.role === "ADMIN") {
-      getAllUsers()
-        .then((r) => setUsers(r.data || []))
-        .catch(() => setUsers([]));
-    } else {
-      getTeamUsers(user.team_name)
-        .then((r) => setUsers(r.data || []))
-        .catch(() => setUsers([]));
-    }
+    fetch()
+      .then((res) => {
+        // Map users and add S.No
+        let data = (res.data || []).map((u) => ({
+          id: u.id,
+          username: u.username,
+          role: u.role,
+          team_name:
+            u.team_name && typeof u.team_name === "object"
+              ? u.team_name.team_name
+              : u.team_name || "-",
+          authorized: !!u.authorized,
+        }));
+
+        // ----------- SORTING LOGIC -----------
+        // 1️⃣ Admin first
+        // 2️⃣ Unauthorized next
+        // 3️⃣ Authorized last
+        data.sort((a, b) => {
+          if (a.role === "ADMIN" && b.role !== "ADMIN") return -1;
+          if (b.role === "ADMIN" && a.role !== "ADMIN") return 1;
+          if (!a.authorized && b.authorized) return -1;
+          if (a.authorized && !b.authorized) return 1;
+          return a.id - b.id;
+        });
+
+        // Add S.No after sorting
+        data = data.map((u, index) => ({ ...u, sno: index + 1 }));
+
+        setRows(data);
+      })
+      .catch(() => setRows([]));
   }, [user]);
 
   useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
+    loadData();
+  }, [loadData]);
 
-  // Can current user edit this target user?
-  const canEdit = (targetUser) => {
-    if (user.role === "ADMIN") return true;
-    if (user.role === "MANAGER") return targetUser.team_name === user.team_name;
+  // ---------------- ACCESS CONTROL ----------------
+  const canEditOrDelete = (row) => {
+    if (row.role === "ADMIN") return false; // No edit/delete for admin
+    if (user.role === "ADMIN") return true; // Admin can edit/delete anyone else
+    if (user.role === "MANAGER") return row.team_name === user.team_name;
     return false;
   };
 
-  // Delete user
-  const handleDeleteUser = async (id) => {
+  // ---------------- EDIT ----------------
+  const handleEdit = (row) => {
+    if (!canEditOrDelete(row)) return;
+    setSelectedUser({ ...row });
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedUser(null);
+    setOpenDialog(false);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const { id, role, team_name, authorized } = selectedUser;
+      await updateEmployee(
+        id,
+        { role, teamName: team_name, authorized },
+        user.username
+      );
+      alert("Changes saved successfully!");
+      handleCloseDialog();
+      loadData(); // reload to reposition users
+    } catch (err) {
+      alert(err.response?.data || err.message || "Failed to update user");
+    }
+  };
+
+  // ---------------- DELETE ----------------
+  const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await deleteUser(id);
-      loadUsers();
+      await deleteUser(id, user.username);
+      loadData();
     } catch (err) {
       alert(err.response?.data || err.message || "Failed to delete user");
     }
   };
 
-  // Update any field: role, teamName, authorized
-  const handleUpdateField = async (id, field, value) => {
-    try {
-      await updateEmployee(id, { [field]: value });
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === id ? { ...u, [field === "teamName" ? "team_name" : field]: value } : u
-        )
-      );
-    } catch (err) {
-      alert(err.response?.data || err.message || "Update failed");
-    }
-  };
+  // ---------------- COLUMNS ----------------
+  const columns = [
+    { field: "sno", headerName: "S.No", width: 100 },
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "username", headerName: "Username", width: 230 },
+    { field: "role", headerName: "Role", width: 210 },
+    { field: "team_name", headerName: "Team Name", width: 200 },
+    {
+      field: "authorized",
+      headerName: "Authorized",
+      width: 200,
+      renderCell: (params) => (params.value ? "Yes" : "No"),
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 120,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <Box>
+          <IconButton
+            color="primary"
+            onClick={() => handleEdit(params.row)}
+            disabled={!canEditOrDelete(params.row)}
+            size="small"
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            color="error"
+            onClick={() => handleDelete(params.row.id)}
+            disabled={!canEditOrDelete(params.row)}
+            size="small"
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+      ),
+    },
+  ];
 
+  // ---------------- UI ----------------
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Employee Management</Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell><b>ID</b></TableCell>
-            <TableCell><b>Username</b></TableCell>
-            <TableCell><b>Role</b></TableCell>
-            <TableCell><b>Team Name</b></TableCell>
-            <TableCell><b>Authorized</b></TableCell>
-            {(user.role === "ADMIN" || user.role === "MANAGER") && <TableCell><b>Actions</b></TableCell>}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((u) => {
-            const editable = canEdit(u);
-            return (
-              <TableRow key={u.id}>
-                <TableCell>{u.id}</TableCell>
-                <TableCell>{u.username}</TableCell>
+    <Box sx={{ height: 421, width: "100%" }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSizeOptions={[6, 14]}
+        initialState={{ pagination: { paginationModel: { page: 0, pageSize: 6 } } }}
+        pagination
+        disableRowSelectionOnClick
+        sx={{ border: 0, "& .MuiDataGrid-cell": { outline: "none" } }}
+        componentsProps={{ pagination: { sx: { justifyContent: "flex-start", paddingLeft: 20 } } }}
+      />
 
-                {/* Role */}
-                <TableCell>
-                  {editable ? (
-                    <Select
-                      value={u.role || ""}
-                      size="small"
-                      onChange={(e) => handleUpdateField(u.id, "role", e.target.value)}
-                    >
-                      {roleOptions.map((role) => (
-                        <MenuItem key={role} value={role}>{role}</MenuItem>
-                      ))}
-                    </Select>
-                  ) : u.role}
-                </TableCell>
+      {/* ---------------- EDIT DIALOG ---------------- */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="xs" fullWidth>
+  <DialogTitle>Edit Employee</DialogTitle>
+  <DialogContent dividers>
+    {selectedUser && (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+        {/* Username */}
+        <TextField
+          label="Username"
+          value={selectedUser.username}
+          disabled
+          fullWidth
+        />
 
-                {/* Team Name */}
-                <TableCell>
-                  {editable ? (
-                    <Select
-                      value={u.team_name || ""}
-                      size="small"
-                      onChange={(e) => handleUpdateField(u.id, "teamName", e.target.value)}
-                    >
-                      {teamOptions.map((team) => (
-                        <MenuItem key={team} value={team}>{team}</MenuItem>
-                      ))}
-                    </Select>
-                  ) : u.team_name || "-"}
-                </TableCell>
+        {/* Role */}
+        <FormControl fullWidth>
+          <InputLabel id="role-label">Role</InputLabel>
+          <Select
+            labelId="role-label"
+            value={selectedUser.role || ""}
+            label="Role"
+            onChange={(e) =>
+              setSelectedUser((prev) => ({ ...prev, role: e.target.value }))
+            }
+          >
+            {roleOptions.map((r) => (
+              <MenuItem key={r} value={r}>
+                {r}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-                {/* Authorized */}
-                <TableCell>
-                  {editable ? (
-                    <Checkbox
-                      checked={!!u.authorized}
-                      onChange={(e) => handleUpdateField(u.id, "authorized", e.target.checked)}
-                    />
-                  ) : (u.authorized ? "Yes" : "No")}
-                </TableCell>
+        {/* Team Name */}
+        <FormControl fullWidth>
+          <InputLabel id="team-label">Team Name</InputLabel>
+          <Select
+            labelId="team-label"
+            value={selectedUser.team_name || ""}
+            label="Team Name"
+            onChange={(e) =>
+              setSelectedUser((prev) => ({ ...prev, team_name: e.target.value }))
+            }
+          >
+            {teamOptions.map((t) => (
+              <MenuItem key={t} value={t}>
+                {t}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-                {/* Actions */}
-                {(user.role === "ADMIN" || user.role === "MANAGER") && (
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => handleDeleteUser(u.id)}
-                      disabled={!editable}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                )}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+        {/* Authorized */}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Checkbox
+            checked={!!selectedUser.authorized}
+            onChange={(e) =>
+              setSelectedUser((prev) => ({
+                ...prev,
+                authorized: e.target.checked,
+              }))
+            }
+          />
+          <Typography>Authorized</Typography>
+        </Box>
+      </Box>
+    )}
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={handleCloseDialog} color="error" variant="outlined">
+      Cancel
+    </Button>
+    <Button onClick={handleSaveChanges} color="success" variant="contained">
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </Box>
   );
 }

@@ -74,8 +74,8 @@ const handleLogin = async (e) => {
           <>
             <Typography variant="h5" gutterBottom>Welcome Back</Typography>
             <Box component="form" onSubmit={handleLogin}>
-              <TextField fullWidth label="Username" margin="normal" value={username} onChange={e=>setUsername(e.target.value)} required />
-              <TextField fullWidth label="Password" type="password" margin="normal" value={password} onChange={e=>setPassword(e.target.value)} required />
+              <TextField fullWidth label="Username" margin="normal" value={username} onChange={e=>setUsername(e.target.value)}  />
+              <TextField fullWidth label="Password" type="password" margin="normal" value={password} onChange={e=>setPassword(e.target.value)} />
               <Button fullWidth variant="contained" sx={{ mt: 2 }} type="submit">Login</Button>
             </Box>
           </>
