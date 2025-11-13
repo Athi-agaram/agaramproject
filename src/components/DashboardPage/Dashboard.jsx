@@ -887,7 +887,7 @@ export default function Dashboard() {
   // --- Conditional rendering ---
   if (!user) {
     return (
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3 ,height:"100px"}}>
         <Typography variant="h6">Not logged in</Typography>
       </Box>
     );
@@ -906,9 +906,9 @@ export default function Dashboard() {
 
   // --- Dashboard JSX ---
   return (
-    <Box sx={{ p: 5, backgroundColor: "#f9fafc", minHeight: "100vh" }}>
+    <Box sx={{ p: 5, backgroundColor: "#f9fafc", maxHeight: "70px"}}>
       {/* Summary Cards */}
-      <Grid container spacing={1} sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "stretch" }}>
+      <Grid container spacing={1} sx={{ mb:3, display: "flex", justifyContent:"space-evenly", alignItems: "stretch",ml:-3 }}>
         {/* Total Revenue */}
         <Grid item xs={12} sm={6} md={2}>
           <Card sx={{ borderLeft: "5px solid #1976d2", height: "100%", width: "190px", ml:"2px" }}>
@@ -972,7 +972,7 @@ export default function Dashboard() {
         {/* Line Chart */}
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 2, height: 300, width: "400px" }}>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>Monthly Revenue Trend</Typography>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}><b>Monthly Revenue Trend</b></Typography>
             <ResponsiveContainer width="100%" height="90%">
               <LineChart data={monthlyRevenue}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -989,7 +989,7 @@ export default function Dashboard() {
         {/* Pie Chart */}
         <Grid item xs={12} md={4}>
           <Card sx={{ p: 2, height: 300, width: "300px", ml:2 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>Product Progress Status</Typography>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}><b>Product Progress Status</b></Typography>
             <ResponsiveContainer width="100%" height="90%">
               <PieChart>
                 <Pie data={progressData} cx="50%" cy="50%" labelLine={false} outerRadius={100} fill="#8884d8" dataKey="value" label>
@@ -1006,7 +1006,7 @@ export default function Dashboard() {
         {/* Bar Chart */}
         <Grid item xs={12}>
           <Card sx={{ p: 2, ml:3, width: "100%", height: 300 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>Employee Role Distribution</Typography>
+            <Typography variant="subtitle1" sx={{ mb: 2 }}><b>Employee Role Distribution</b></Typography>
             <ResponsiveContainer width="100%" height={270} ml={0}>
               <BarChart data={roleData}>
                 <CartesianGrid strokeDasharray="3 3" />

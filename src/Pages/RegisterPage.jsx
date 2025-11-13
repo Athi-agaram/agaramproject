@@ -60,7 +60,7 @@ export default function RegisterPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #193b85ff 0%, #bfbfdaff 100%)",
+        background: "linear-gradient(135deg, #08193dff 0%, #bfbfdaff 100%)",
         padding: 4,
       }}
     >
@@ -97,7 +97,7 @@ export default function RegisterPage() {
           justifyContent: "center",
         }}
       >
-        <Fade in timeout={800}>
+        <Fade in timeout={80}>
           <Paper
             elevation={0}
             sx={{

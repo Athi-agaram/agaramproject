@@ -44,3 +44,9 @@ export const getTeams = async () => {
 // Add this in the Users section
 export const checkUsernameExists = (username) =>
   API.get(`/users/check-username?username=${encodeURIComponent(username)}`);
+// ==================== Profile & Password ====================
+export const editUserProfile = (id, payload) =>
+  API.put(`/users/edit-profile/${id}`, payload);
+
+export const changeUserPassword = (id, payload) =>
+  API.put(`/users/change-password/${id}`, payload);
