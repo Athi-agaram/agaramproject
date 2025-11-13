@@ -41,3 +41,6 @@ export const getTeams = async () => {
     return [];
   }
 };
+// Add this in the Users section
+export const checkUsernameExists = (username) =>
+  API.get(`/users/check-username?username=${encodeURIComponent(username)}`);

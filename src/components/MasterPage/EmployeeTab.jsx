@@ -127,7 +127,7 @@ export default function EmployeeTab({ user }) {
   // ---------------- COLUMNS ----------------
   const columns = [
     { field: "sno", headerName: "S.No", width: 100 },
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", width: 100 , renderCell: (params) => `E${params.value}`},
     { field: "username", headerName: "Username", width: 240 },
     { field: "role", headerName: "Role", width: 210 },
     { field: "team_name", headerName: "Team Name", width: 200 },
