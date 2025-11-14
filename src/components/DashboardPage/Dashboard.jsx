@@ -53,10 +53,17 @@ export default function Dashboard() {
 
       // --- Summary Cards ---
       const totalRevenue = products.reduce(
-        (sum, p) => sum + p.price * p.quantity,
+        (sum, p) => sum + Number(p.price) * Number(p.quantity),
         0
       );
-      const totalSales = products.length;
+
+      // Correct total quantity
+      const totalQuantity = products.reduce(
+        (sum, p) => sum + Number(p.quantity),
+        0
+      );
+
+      const totalSales = totalQuantity; // total units sold
       const totalEmployees = users.length;
       const totalTeams = new Set(users.map((u) => u.team_name)).size;
 
@@ -122,7 +129,7 @@ export default function Dashboard() {
     } catch (err) {
       console.error("Dashboard load error:", err);
     }
-  }, []); // <-- no user dependency
+  }, []);
 
   useEffect(() => {
     loadDashboard();
@@ -131,7 +138,7 @@ export default function Dashboard() {
   // --- Conditional rendering ---
   if (!user) {
     return (
-      <Box sx={{ p: 3 ,height:"100px"}}>
+      <Box sx={{ p: 3, height:"100px" }}>
         <Typography variant="h6">Not logged in</Typography>
       </Box>
     );
@@ -150,9 +157,9 @@ export default function Dashboard() {
 
   // --- Dashboard JSX ---
   return (
-    <Box sx={{ p: 5, backgroundColor: "#f9fafc", maxHeight: "70px"}}>
+    <Box sx={{ p: 4, backgroundColor: "#f9fafc", maxHeight: "70px"}}>
       {/* Summary Cards */}
-      <Grid container spacing={1} sx={{ mb:3, display: "flex", justifyContent:"space-evenly", alignItems: "stretch",ml:-3 }}>
+      <Grid container spacing={1} sx={{ mb:5, display: "flex", justifyContent:"space-evenly", alignItems: "stretch",ml:-3 }}>
         {/* Total Revenue */}
         <Grid item xs={12} sm={6} md={2}>
           <Card sx={{ borderLeft: "5px solid #1976d2", height: "100%", width: "190px", ml:"2px" }}>
@@ -175,9 +182,11 @@ export default function Dashboard() {
         <Grid item xs={12} sm={6} md={2}>
           <Card sx={{ borderLeft: "5px solid #0288d1", height: "100%", width:"190" }}>
             <CardContent>
-              <Typography variant="subtitle2" color="text.secondary">Avg Revenue / Sale</Typography>
+              <Typography variant="subtitle2" color="text.secondary">Average Revenue</Typography>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                ₹{summary.totalSales ? (summary.totalRevenue / summary.totalSales).toFixed(2) : 0}
+                 ₹{summary.totalSales > 0
+                  ? new Intl.NumberFormat("en-IN").format(
+                           (summary.totalRevenue / summary.totalSales).toFixed(2)): 0}
               </Typography>
             </CardContent>
           </Card>
@@ -258,7 +267,7 @@ export default function Dashboard() {
                 <YAxis />
                 <ReTooltip />
                 <Legend />
-                <Bar dataKey="count" fill="#82ca9d" barSize={50} />
+                <Bar dataKey="count" fill="#82ca9d" barSize={40} />
               </BarChart>
             </ResponsiveContainer>
           </Card>

@@ -731,6 +731,8 @@ export default function ProductTab({ user }) {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const prevData = useRef([]); // ✅ keep previous data reference
+  const CURRENT_MONTH = MONTH_OPTIONS[new Date().getMonth()];
+
 
   // ---------------- LOAD PRODUCTS ----------------
   const loadProducts = useCallback(async () => {
@@ -778,7 +780,7 @@ export default function ProductTab({ user }) {
         progress: row.progress,
         team_name: row.team_name,
         employee_id: row.employee_id || user.id,
-        sale_month: row.sale_month || "Jan",
+        sale_month: row.sale_month || CURRENT_MONTH,
       });
       setIsEdit(true);
       setEditId(row.id);
@@ -790,7 +792,7 @@ export default function ProductTab({ user }) {
         progress: "In Progress",
         team_name: user.team_name,
         employee_id: user.id,
-        sale_month: "Jan",
+        sale_month: CURRENT_MONTH,
       });
       setIsEdit(false);
       setEditId(null);

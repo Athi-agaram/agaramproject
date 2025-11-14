@@ -114,15 +114,25 @@ export default function EmployeeTab({ user }) {
   };
 
   // ---------------- DELETE ----------------
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-    try {
-      await deleteUser(id, user.username);
-      loadData();
-    } catch (err) {
-      alert(err.response?.data || err.message || "Failed to delete user");
-    }
-  };
+const handleDelete = async (row) => {
+  if (!canEditOrDelete(row)) return;
+
+  if (row.authorized) {
+    alert("This user is authorized. Please unauthorize the user before deleting.");
+    return;
+  }
+
+  if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+  try {
+    await deleteUser(row.id, user.username);
+    alert("User deleted successfully");
+    loadData();
+  } catch (err) {
+    alert(err.response?.data || err.message || "Failed to delete user");
+  }
+};
+
 
   // ---------------- COLUMNS ----------------
   const columns = [
@@ -155,7 +165,7 @@ export default function EmployeeTab({ user }) {
           </IconButton>
           <IconButton
             color="error"
-            onClick={() => handleDelete(params.row.id)}
+            onClick={() => handleDelete(params.row)}
             disabled={!canEditOrDelete(params.row)}
             size="small"
           >

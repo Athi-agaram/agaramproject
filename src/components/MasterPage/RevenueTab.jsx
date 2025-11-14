@@ -586,7 +586,311 @@
 // }
 
 
-import React, { useEffect, useState, useCallback } from "react";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState, useCallback } from "react";
+// import {
+//   Box,
+//   Table,
+//   TableHead,
+//   TableRow,
+//   TableCell,
+//   TableBody,
+//   TableContainer,
+//   Paper,
+//   TableSortLabel,
+//   TablePagination,
+// } from "@mui/material";
+// import { getProducts } from "../../api/api";
+
+// export default function RevenueDashboard({ user }) {
+//   const [revenueData, setRevenueData] = useState([]);
+//   const [order, setOrder] = useState("asc");
+//   const [orderBy, setOrderBy] = useState("month");
+//   const [page, setPage] = useState(0);
+//   const [rowsPerPage, setRowsPerPage] = useState(7);
+  
+
+//   const loadRevenue = useCallback(() => {
+//     const teamName = user?.role === "ADMIN" ? "" : user.team_name;
+
+//     getProducts(teamName)
+//       .then((res) => {
+//         const products = Array.isArray(res.data) ? res.data : [];
+//         const revenueMap = {};
+
+//         products.forEach((p) => {
+//           const team = p.team_name || "Unknown";
+//           const month = p.sale_month || "Unknown";
+//           const revenue = Number(p.price) * Number(p.quantity);
+
+//           if (!revenueMap[team]) revenueMap[team] = {};
+//           if (!revenueMap[team][month]) {
+//             revenueMap[team][month] = { totalRevenue: 0, numSales: 0 };
+//           }
+
+//           revenueMap[team][month].totalRevenue += revenue;
+//           revenueMap[team][month].numSales += 1;
+//         });
+
+//         const finalData = [];
+//         Object.keys(revenueMap).forEach((team) => {
+//           const months = Object.keys(revenueMap[team]);
+//           const orderedMonths = [
+//             "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+//             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+//           ].filter((m) => months.includes(m));
+
+//           orderedMonths.forEach((month, idx) => {
+//             const entry = revenueMap[team][month];
+//             const avgRevenue =
+//               entry.numSales > 0 ? entry.totalRevenue / entry.numSales : 0;
+
+//             let growth = 0;
+//             if (idx > 0) {
+//               const prevRevenue =
+//                 revenueMap[team][orderedMonths[idx - 1]].totalRevenue;
+//               growth = prevRevenue
+//                 ? ((entry.totalRevenue - prevRevenue) / prevRevenue) * 100
+//                 : 0;
+//             }
+
+//             finalData.push({
+//               id: finalData.length + 1,
+//               team,
+//               month,
+//               totalRevenue: entry.totalRevenue,
+//               numSales: entry.numSales,
+//               avgRevenue,
+//               growth,
+//             });
+//           });
+//         });
+
+//         setRevenueData(finalData);
+//       })
+//       .catch((err) => {
+//         console.error("Error loading revenue data:", err);
+//         setRevenueData([]);
+//       });
+//   }, [user]);
+
+//   useEffect(() => {
+//     loadRevenue();
+//   }, [loadRevenue]);
+
+//   // Compute YTD revenue
+//   const getYTDRevenue = (team, currentMonth) => {
+//     const monthOrder = [
+//       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+//       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+//     ];
+//     const currentIndex = monthOrder.indexOf(currentMonth);
+//     return revenueData
+//       .filter(
+//         (d) =>
+//           d.team === team && monthOrder.indexOf(d.month) <= currentIndex
+//       )
+//       .reduce((sum, d) => sum + d.totalRevenue, 0);
+//   };
+
+//   // Sorting handler
+//   const handleSort = (property) => {
+//     const isAsc = orderBy === property && order === "asc";
+//     setOrder(isAsc ? "desc" : "asc");
+//     setOrderBy(property);
+//   };
+
+//   const sortedData = [...revenueData].sort((a, b) => {
+//     if (a[orderBy] < b[orderBy]) return order === "asc" ? -1 : 1;
+//     if (a[orderBy] > b[orderBy]) return order === "asc" ? 1 : -1;
+//     return 0;
+//   });
+
+//   // Pagination handlers
+//   const handleChangePage = (_, newPage) => setPage(newPage);
+//   const handleChangeRowsPerPage = (event) => {
+//     setRowsPerPage(parseInt(event.target.value, 10));
+//     setPage(0);
+//   };
+
+//   return (
+//     <Box sx={{ width: "100%", flex: 1, overflow: "hidden" }}>
+//       <TableContainer
+//         component={Paper}
+//         sx={{
+//           borderRadius: 1,
+//           boxShadow: 0,
+//           // maxHeight: 500,
+//           // overflowX:"hidden",
+//           // overflowY: "hidden",
+//           whiteSpace: "wrap",
+//         }}
+//       >
+//         <Table >
+//           <TableHead sx={{ backgroundColor: "#f5f5f5",height:"28px" }}>
+//             <TableRow>
+//               {[
+//                 { id: "id", label: "ID", width: 50 },
+//                 { id: "team", label: "Team Name", width: 80 },
+//                 { id: "month", label: "Month", width: 50 },
+//                 { id: "totalRevenue", label: "Total Revenue", width: 50 },
+//                 { id: "numSales", label: "Sales", width: 50 },
+//                 { id: "avgRevenue", label: "Avg Revenue", width: 80 },
+//                 { id: "growth", label: "Growth (%)", width: 70 },
+//                 { id: "ytd", label: "YTD Revenue", width: 90 },
+//               ].map((headCell) => (
+//                 <TableCell
+//                   key={headCell.id}
+//                   sx={{
+//                     width: headCell.width,
+//                     maxWidth: 900,
+//                     fontWeight: "600",
+//                     bgcolor:"#e4e4e4ff"
+//                   }}
+//                   align={
+//                     [
+//                       "totalRevenue",
+//                       "numSales",
+//                       "avgRevenue",
+//                       "growth",
+//                       "ytd",
+//                     ].includes(headCell.id)
+//                       ? "right"
+//                       : "left"
+//                   }
+//                   sortDirection={orderBy === headCell.id ? order : false}
+//                 >
+//                   {headCell.id !== "ytd" ? (
+//                     <TableSortLabel
+//                       active={orderBy === headCell.id}
+//                       direction={orderBy === headCell.id ? order : "asc"}
+//                       onClick={() => handleSort(headCell.id)}
+//                     >
+//                       {headCell.label}
+//                     </TableSortLabel>
+//                   ) : (
+//                     headCell.label
+//                   )}
+//                 </TableCell>
+//               ))}
+//             </TableRow>
+//           </TableHead>
+
+//           <TableBody>
+//             {sortedData.length > 0 ? (
+//               sortedData
+//                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+//                 .map((r, i) => (
+//                   <TableRow key={r.id} hover>
+//                     <TableCell sx={{ width: 70 }}>{page * rowsPerPage +i + 1}</TableCell>
+//                     <TableCell sx={{ width: 100 }}>{r.team}</TableCell>
+//                     <TableCell sx={{ width: 60 }}>{r.month}</TableCell>
+//                     <TableCell align="right" sx={{ width: 70 }}>
+//                       ₹{r.totalRevenue.toLocaleString()}
+//                     </TableCell>
+//                     <TableCell align="right" sx={{ width: 90 }}>
+//                       {r.numSales}
+//                     </TableCell>
+//                     <TableCell align="right" sx={{ width: 100 }}>
+//                       ₹{r.avgRevenue.toFixed(2)}
+//                     </TableCell>
+//                     <TableCell
+//                       align="right"
+//                       sx={{
+//                         width: 90,
+//                         color:
+//                           r.growth > 0
+//                             ? "green"
+//                             : r.growth < 0
+//                             ? "red"
+//                             : "text.primary",
+//                       }}
+//                     >
+//                       {r.growth.toFixed(2)}%
+//                     </TableCell>
+//                     <TableCell align="right" sx={{ width: 90 }}>
+//                       ₹{getYTDRevenue(r.team, r.month).toLocaleString()}
+//                     </TableCell>
+//                   </TableRow>
+//                 ))
+//             ) : (
+//               <TableRow>
+//                 <TableCell colSpan={8} align="center">
+//                   No revenue data available
+//                 </TableCell>
+//               </TableRow>
+//             )}
+//           </TableBody>
+//         </Table>
+
+//         {/* ✅ Pagination */}
+//         <TablePagination
+//           rowsPerPageOptions={[7, 14, 21, 50]}
+//           component="div"
+//           count={sortedData.length}
+//           rowsPerPage={rowsPerPage}
+//           page={page}
+//           onPageChange={handleChangePage}
+//           onRowsPerPageChange={handleChangeRowsPerPage}
+//           sx={{mt:1}}
+//         />
+//       </TableContainer>
+//     </Box>
+//   );
+// }
+
+
+
+
+
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -597,177 +901,76 @@ import {
   TableContainer,
   Paper,
   TableSortLabel,
-  TablePagination,
+  TablePagination
 } from "@mui/material";
-import { getProducts } from "../../api/api";
+import { getRevenueDashboard } from "../../api/api";
 
 export default function RevenueDashboard({ user }) {
-  const [revenueData, setRevenueData] = useState([]);
+  const [data, setData] = useState([]);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("month");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
-  const loadRevenue = useCallback(() => {
-    const teamName = user?.role === "ADMIN" ? "" : user.team_name;
-
-    getProducts(teamName)
-      .then((res) => {
-        const products = Array.isArray(res.data) ? res.data : [];
-        const revenueMap = {};
-
-        products.forEach((p) => {
-          const team = p.team_name || "Unknown";
-          const month = p.sale_month || "Unknown";
-          const revenue = Number(p.price) * Number(p.quantity);
-
-          if (!revenueMap[team]) revenueMap[team] = {};
-          if (!revenueMap[team][month]) {
-            revenueMap[team][month] = { totalRevenue: 0, numSales: 0 };
-          }
-
-          revenueMap[team][month].totalRevenue += revenue;
-          revenueMap[team][month].numSales += 1;
-        });
-
-        const finalData = [];
-        Object.keys(revenueMap).forEach((team) => {
-          const months = Object.keys(revenueMap[team]);
-          const orderedMonths = [
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-          ].filter((m) => months.includes(m));
-
-          orderedMonths.forEach((month, idx) => {
-            const entry = revenueMap[team][month];
-            const avgRevenue =
-              entry.numSales > 0 ? entry.totalRevenue / entry.numSales : 0;
-
-            let growth = 0;
-            if (idx > 0) {
-              const prevRevenue =
-                revenueMap[team][orderedMonths[idx - 1]].totalRevenue;
-              growth = prevRevenue
-                ? ((entry.totalRevenue - prevRevenue) / prevRevenue) * 100
-                : 0;
-            }
-
-            finalData.push({
-              id: finalData.length + 1,
-              team,
-              month,
-              totalRevenue: entry.totalRevenue,
-              numSales: entry.numSales,
-              avgRevenue,
-              growth,
-            });
-          });
-        });
-
-        setRevenueData(finalData);
+  useEffect(() => {
+    getRevenueDashboard()
+      .then(res => {
+        let filteredData = res.data;
+        if (user?.role !== "ADMIN") {
+          filteredData = filteredData.filter(d => d.team === user.team_name);
+        }
+        setData(filteredData);
       })
-      .catch((err) => {
-        console.error("Error loading revenue data:", err);
-        setRevenueData([]);
-      });
+      .catch(err => console.error("Error loading revenue dashboard:", err));
   }, [user]);
 
-  useEffect(() => {
-    loadRevenue();
-  }, [loadRevenue]);
-
-  // Compute YTD revenue
-  const getYTDRevenue = (team, currentMonth) => {
-    const monthOrder = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    ];
-    const currentIndex = monthOrder.indexOf(currentMonth);
-    return revenueData
-      .filter(
-        (d) =>
-          d.team === team && monthOrder.indexOf(d.month) <= currentIndex
-      )
-      .reduce((sum, d) => sum + d.totalRevenue, 0);
-  };
-
-  // Sorting handler
   const handleSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
-  const sortedData = [...revenueData].sort((a, b) => {
-    if (a[orderBy] < b[orderBy]) return order === "asc" ? -1 : 1;
-    if (a[orderBy] > b[orderBy]) return order === "asc" ? 1 : -1;
-    return 0;
-  });
+  const sortedData = [...data].sort((a, b) => {
+    const aVal = a[orderBy];
+    const bVal = b[orderBy];
 
-  // Pagination handlers
-  const handleChangePage = (_, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+    if (typeof aVal === "string") {
+      return order === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    }
+    return order === "asc" ? aVal - bVal : bVal - aVal;
+  });
 
   return (
     <Box sx={{ width: "100%", flex: 1, overflow: "hidden" }}>
-      <TableContainer
-        component={Paper}
-        sx={{
-          borderRadius: 1,
-          boxShadow: 0,
-          // maxHeight: 500,
-          // overflowX:"hidden",
-          // overflowY: "hidden",
-          whiteSpace: "wrap",
-        }}
-      >
-        <Table >
-          <TableHead sx={{ backgroundColor: "#f5f5f5",height:"28px" }}>
+      <TableContainer component={Paper} sx={{ borderRadius: 1, boxShadow: 0 }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#f5f5f5", height: "28px" }}>
             <TableRow>
               {[
-                { id: "id", label: "ID", width: 50 },
-                { id: "team", label: "Team Name", width: 80 },
-                { id: "month", label: "Month", width: 50 },
-                { id: "totalRevenue", label: "Total Revenue", width: 50 },
-                { id: "numSales", label: "Sales", width: 50 },
-                { id: "avgRevenue", label: "Avg Revenue", width: 80 },
-                { id: "growth", label: "Growth (%)", width: 70 },
-                { id: "ytd", label: "YTD Revenue", width: 90 },
-              ].map((headCell) => (
+                { id: "id", label: "ID" },
+                { id: "team", label: "Team Name" },
+                { id: "month", label: "Month" },
+                { id: "total_revenue", label: "Total Revenue" },
+                { id: "num_sales", label: "Sales" },
+                { id: "avg_revenue", label: "Avg Revenue" },
+                { id: "growth", label: "Growth (%)" },
+                { id: "ytd_revenue", label: "YTD Revenue" }
+              ].map(h => (
                 <TableCell
-                  key={headCell.id}
-                  sx={{
-                    width: headCell.width,
-                    maxWidth: 900,
-                    fontWeight: "600",
-                    bgcolor:"#e4e4e4ff"
-                  }}
-                  align={
-                    [
-                      "totalRevenue",
-                      "numSales",
-                      "avgRevenue",
-                      "growth",
-                      "ytd",
-                    ].includes(headCell.id)
-                      ? "right"
-                      : "left"
-                  }
-                  sortDirection={orderBy === headCell.id ? order : false}
+                  key={h.id}
+                  sx={{ fontWeight: 600 }}
+                  align={["total_revenue","num_sales","avg_revenue","growth","ytd_revenue"].includes(h.id) ? "right" : "left"}
                 >
-                  {headCell.id !== "ytd" ? (
+                  {h.id !== "ytd_revenue" ? (
                     <TableSortLabel
-                      active={orderBy === headCell.id}
-                      direction={orderBy === headCell.id ? order : "asc"}
-                      onClick={() => handleSort(headCell.id)}
+                      active={orderBy === h.id}
+                      direction={orderBy === h.id ? order : "asc"}
+                      onClick={() => handleSort(h.id)}
                     >
-                      {headCell.label}
+                      {h.label}
                     </TableSortLabel>
                   ) : (
-                    headCell.label
+                    h.label
                   )}
                 </TableCell>
               ))}
@@ -778,37 +981,21 @@ export default function RevenueDashboard({ user }) {
             {sortedData.length > 0 ? (
               sortedData
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((r, i) => (
+                .map(r => (
                   <TableRow key={r.id} hover>
-                    <TableCell sx={{ width: 70 }}>{page * rowsPerPage +i + 1}</TableCell>
-                    <TableCell sx={{ width: 100 }}>{r.team}</TableCell>
-                    <TableCell sx={{ width: 60 }}>{r.month}</TableCell>
-                    <TableCell align="right" sx={{ width: 70 }}>
-                      ₹{r.totalRevenue.toLocaleString()}
-                    </TableCell>
-                    <TableCell align="right" sx={{ width: 90 }}>
-                      {r.numSales}
-                    </TableCell>
-                    <TableCell align="right" sx={{ width: 100 }}>
-                      ₹{r.avgRevenue.toFixed(2)}
-                    </TableCell>
+                    <TableCell>{r.id}</TableCell>
+                    <TableCell>{r.team}</TableCell>
+                    <TableCell>{r.month}</TableCell>
+                    <TableCell align="right">₹{r.total_revenue.toLocaleString()}</TableCell>
+                    <TableCell align="right">{r.num_sales}</TableCell>
+                    <TableCell align="right">₹{r.avg_revenue.toFixed(2)}</TableCell>
                     <TableCell
                       align="right"
-                      sx={{
-                        width: 90,
-                        color:
-                          r.growth > 0
-                            ? "green"
-                            : r.growth < 0
-                            ? "red"
-                            : "text.primary",
-                      }}
+                      sx={{ color: r.growth > 0 ? "green" : r.growth < 0 ? "red" : "text.primary" }}
                     >
                       {r.growth.toFixed(2)}%
                     </TableCell>
-                    <TableCell align="right" sx={{ width: 90 }}>
-                      ₹{getYTDRevenue(r.team, r.month).toLocaleString()}
-                    </TableCell>
+                    <TableCell align="right">₹{r.ytd_revenue.toLocaleString()}</TableCell>
                   </TableRow>
                 ))
             ) : (
@@ -821,16 +1008,14 @@ export default function RevenueDashboard({ user }) {
           </TableBody>
         </Table>
 
-        {/* ✅ Pagination */}
         <TablePagination
           rowsPerPageOptions={[7, 14, 21, 50]}
           component="div"
           count={sortedData.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{mt:1}}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          onRowsPerPageChange={e => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
         />
       </TableContainer>
     </Box>
