@@ -833,12 +833,12 @@ export default function ProductTab({ user }) {
   // ---------------- COLUMNS ----------------
   const columns = [
     { field: "sno", headerName: "S.No", width: 90 },
-    { field: "id", headerName: "ID", width: 110 },
-    { field: "name", headerName: "Product", width: 190 },
+    { field: "id", headerName: "ID", width: 110 ,renderCell: (params) => `P${params.value}`},
+    { field: "name", headerName: "Product", width: 160 },
     { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "price", headerName: "Price", width: 120 },
-    { field: "team_name", headerName: "Team", width: 140 },
-    { field: "progress", headerName: "Progress", width: 150 },
+    { field: "price", headerName: "Price", width: 150 },
+    { field: "team_name", headerName: "Team", width: 163 },
+    { field: "progress", headerName: "Progress", width: 190 },
     { field: "sale_month", headerName: "Month", width: 120 },
     {
       field: "actions",
@@ -876,7 +876,7 @@ export default function ProductTab({ user }) {
   ];
 
   return (
-    <Box sx={{ height:390, width: "1190px" }}>
+    <Box sx={{ height:390, width: "100%" }}>
 
 
 <DataGrid
@@ -912,7 +912,7 @@ export default function ProductTab({ user }) {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpen()}
-          sx={{ mb: 1, mt: 0,ml:0 }}
+          sx={{ mb: 1, mt: 2.5,ml:128 }}
         >
           Add Product
         </Button>

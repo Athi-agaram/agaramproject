@@ -127,9 +127,9 @@ export default function EmployeeTab({ user }) {
   // ---------------- COLUMNS ----------------
   const columns = [
     { field: "sno", headerName: "S.No", width: 100 },
-    { field: "id", headerName: "ID", width: 100 , renderCell: (params) => `E${params.value}`},
+    { field: "id", headerName: "ID", width: 170 , renderCell: (params) => `E0${params.value}`},
     { field: "username", headerName: "Username", width: 240 },
-    { field: "role", headerName: "Role", width: 210 },
+    { field: "role", headerName: "Role", width: 233 },
     { field: "team_name", headerName: "Team Name", width: 200 },
     {
       field: "authorized",
@@ -168,7 +168,7 @@ export default function EmployeeTab({ user }) {
 
   // ---------------- UI ----------------
   return (
-    <Box sx={{ height: "474px", width: "1160px" }}>
+    <Box sx={{ height: "474px", width: "100%" }}>
       <DataGrid
         rows={rows}
         columns={columns}

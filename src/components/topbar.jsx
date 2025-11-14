@@ -148,7 +148,7 @@ import { useNavigate } from "react-router-dom";
 const topBarHeight = 60;
 const drawerWidthCollapsed = 73;
 
-export default function TopBar({ user }) {
+export default function TopBar({  user, setMasterTab  }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
     const navigate = useNavigate();
@@ -198,14 +198,13 @@ export default function TopBar({ user }) {
         left: `${drawerWidthCollapsed}px`,
         width: `calc(100% - ${drawerWidthCollapsed}px)`,
         height: `${topBarHeight}px`,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#ecf1f7ff",
         zIndex: 1300,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between", minHeight: `${topBarHeight}px`, px: 4 }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography sx={{ fontSize: 18, fontWeight: 700, color: "#1a237e" }}>
+          <Typography sx={{ fontSize: 18, fontWeight: 700, color: "#1a237e" }}  onClick={() => setMasterTab(null)}>
             Agaram Technologies
           </Typography>
         </Box>
